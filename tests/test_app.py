@@ -63,3 +63,60 @@ def test_delete_user(client):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'message': 'Usuario deletado'}
+
+
+# Exercícios
+# Escreva um teste para o erro de 404 (NOT FOUND) para o endpoint de PUT.
+def test_update_user_return_not_found(client):
+    response = client.put(
+        '/users/999',
+        json={
+            'username': 'bob',
+            'email': 'bob@example.com',
+            'password': 'mynewpassword',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Usuario não encontrado'}
+
+
+# Escreva um teste para o erro de 404 (NOT FOUND) para o endpoint de DELETE
+def test_delete_user_return_not_found(client):
+    response = client.delete(
+        '/users/999',
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Usuario não encontrado'}
+
+
+# Escreva um teste para o erro de 404 (NOT FOUND) para o endpoint de GET By ID
+def test_get_user_by_id_not_found(client):
+    response = client.get(
+        '/users/999',
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Usuario não encontrado'}
+
+
+# Escreva um teste para o código 200 do endpoint GET by ID
+def test_get_user_by_id(client):
+    client.post(
+        '/users/',
+        json={
+            'username': 'alice',
+            'email': 'alice@alice.com',
+            'password': 'senhasecretadaalice',
+        },
+    )
+
+    response = client.get('/users/1')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'alice',
+        'email': 'alice@alice.com',
+        'id': 1,
+    }
